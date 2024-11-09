@@ -2,12 +2,12 @@
 
 import { useRef, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { Box } from '@react-three/drei';
 import { useGameStore } from '@/store/gameStore';
-import type { Mesh } from 'three';
+import PlayerModel from './models/PlayerModel';
+import type { Group } from 'three';
 
 export default function Player() {
-  const ref = useRef<Mesh>(null);
+  const ref = useRef<Group>(null);
   const { 
     playerPosition, 
     isPlaying, 
@@ -59,7 +59,6 @@ export default function Player() {
     // Add rotation and tilt when jumping
     if (isJumping) {
       ref.current.rotation.z = Math.sin(state.clock.elapsedTime * 8) * 0.2;
-      // Add upward stretch when jumping is held
       if (isJumpHeld) {
         ref.current.scale.y = 1.2;
         ref.current.scale.x = 0.9;
@@ -74,18 +73,11 @@ export default function Player() {
   });
 
   return (
-    <Box
+    <group
       ref={ref}
       position={[playerPosition.x, playerPosition.y, playerPosition.z]}
-      args={[0.8, 0.8, 0.8]}
     >
-      <meshStandardMaterial 
-        color="hotpink"
-        emissive="pink"
-        emissiveIntensity={isJumping ? (isJumpHeld ? 0.8 : 0.5) : 0}
-        metalness={0.5}
-        roughness={0.5}
-      />
-    </Box>
+      <PlayerModel />
+    </group>
   );
 } 

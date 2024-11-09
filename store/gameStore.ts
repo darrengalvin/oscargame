@@ -1,5 +1,7 @@
 import { create } from 'zustand';
 import { GameStore, Block } from '../types/game';
+import { themes } from '@/config/themes';
+import { ThemeName } from '@/types/theme';
 
 const GRAVITY = -0.012;
 const JUMP_FORCE = 0.3;
@@ -30,7 +32,10 @@ const generateNewBlock = (index: number, lastBlockY: number): Block => ({
   },
   type: (index === 0 ? 'normal' : 
          Math.random() > 0.85 ? 'moving' : 
-         'normal') as BlockType
+         'normal') as BlockType,
+  color: (index === 0 ? 'normal' : 
+         Math.random() > 0.85 ? 'moving' : 
+         'normal') as string,
 });
 
 const generateObstacle = (blockX: number, blockY: number) => ({
@@ -60,6 +65,59 @@ interface BlockScore {
   scored: boolean;
 }
 
+interface GameState {
+  currentTheme: ThemeName;
+  collectibles: {
+    id: string;
+    type: string;
+    position: {
+      x: number;
+      y: number;
+      z: number;
+    };
+  }[];
+  gems: number;
+  unlockedThemes: ThemeName[];
+  specialItems: {
+    [key in ThemeName]?: {
+      collected: boolean;
+      type: string;
+    }[];
+  };
+}
+
+interface GameStore extends GameState {
+  score: number;
+  highScore: number;
+  isPlaying: boolean;
+  playerPosition: { x: number; y: number; z: number };
+  worldPosition: number;
+  velocity: { x: number; y: number; z: number };
+  isJumping: boolean;
+  obstacles: {
+    id: string;
+    position: { x: number; y: number; z: number };
+    type: string;
+  }[];
+  blocks: Block[];
+  scoredBlocks: Set<string>;
+  jumpStartTime: number;
+  isJumpHeld: boolean;
+  changeTheme: (theme: ThemeName) => void;
+  collectGem: () => void;
+  collectSpecialItem: (theme: ThemeName, itemType: string) => void;
+  unlockTheme: (theme: ThemeName) => void;
+  initializeProgress: () => void;
+}
+
+const THEME_PRICES = {
+  candy: 0,
+  prehistoric: 100,
+  underwater: 150,
+  space: 200,
+  jungle: 250,
+};
+
 export const useGameStore = create<GameStore>((set, get) => ({
   score: 0,
   highScore: 0,
@@ -73,6 +131,11 @@ export const useGameStore = create<GameStore>((set, get) => ({
   scoredBlocks: new Set<string>(),
   jumpStartTime: 0,
   isJumpHeld: false,
+  currentTheme: 'prehistoric',
+  collectibles: [],
+  gems: 0,
+  unlockedThemes: ['candy'], // Candy theme is free
+  specialItems: {},
 
   startGame: () => set({ 
     isPlaying: true, 
@@ -228,4 +291,72 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
   
   updateScore: (newScore) => set({ score: newScore }),
+
+  changeTheme: (theme: ThemeName) => {
+    set({ currentTheme: theme });
+    // Regenerate environment with new theme
+    const state = get();
+    if (state.isPlaying) {
+      state.startGame(); // Reset game with new theme
+    }
+  },
+
+  generateCollectibles: (blockX: number, blockY: number) => {
+    const state = get();
+    const theme = themes[state.currentTheme];
+    if (Math.random() < 0.3) { // 30% chance to spawn collectible
+      const collectible = theme.collectibles[Math.floor(Math.random() * theme.collectibles.length)];
+      return {
+        id: `collectible-${blockX}`,
+        type: collectible.type,
+        position: { x: blockX, y: blockY + 1, z: 0 }
+      };
+    }
+    return null;
+  },
+
+  collectGem: () => {
+    set(state => ({ gems: state.gems + 1 }));
+  },
+
+  collectSpecialItem: (theme: ThemeName, itemType: string) => {
+    set(state => {
+      const newSpecialItems = { ...state.specialItems };
+      if (!newSpecialItems[theme]) {
+        newSpecialItems[theme] = [];
+      }
+      newSpecialItems[theme]?.push({ collected: true, type: itemType });
+      // Special items give 10 gems
+      return {
+        specialItems: newSpecialItems,
+        gems: state.gems + 10
+      };
+    });
+  },
+
+  unlockTheme: (theme: ThemeName) => {
+    const state = get();
+    const price = THEME_PRICES[theme];
+    if (state.gems >= price && !state.unlockedThemes.includes(theme)) {
+      set(state => ({
+        gems: state.gems - price,
+        unlockedThemes: [...state.unlockedThemes, theme]
+      }));
+      // Save to localStorage
+      localStorage.setItem('unlockedThemes', JSON.stringify([...state.unlockedThemes, theme]));
+      localStorage.setItem('gems', (state.gems - price).toString());
+    }
+  },
+
+  // Initialize from localStorage
+  initializeProgress: () => {
+    const savedThemes = localStorage.getItem('unlockedThemes');
+    const savedGems = localStorage.getItem('gems');
+    if (savedThemes) {
+      set({ unlockedThemes: JSON.parse(savedThemes) });
+    }
+    if (savedGems) {
+      set({ gems: parseInt(savedGems, 10) });
+    }
+  },
 })); 
