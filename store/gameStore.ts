@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { GameStore } from '../types/game';
+import { GameStore, Block } from '../types/game';
 
 const GRAVITY = -0.012;
 const JUMP_FORCE = 0.3;
@@ -49,7 +49,7 @@ const generateInitialBlocks = () => {
   return blocks;
 };
 
-const checkCollision = (playerPos: any, blockPos: any) => {
+const checkCollision = (playerPos: { x: number; y: number }, blockPos: { x: number; y: number }) => {
   const horizontalCollision = Math.abs(playerPos.x - blockPos.x) < (PLAYER_SIZE.width + BLOCK_SIZE.width) / 1.8;
   const verticalCollision = Math.abs(playerPos.y - blockPos.y) < (PLAYER_SIZE.height + BLOCK_SIZE.height) / 1.8;
   return horizontalCollision && verticalCollision;
@@ -143,7 +143,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const steps = 3;
     let finalPosition = { ...state.playerPosition };
     let isOnPlatform = false;
-    let currentBlockId = null;
+    let currentBlockId: string | null = null;
 
     for (let i = 0; i < steps; i++) {
       const stepVelocity = {
@@ -209,7 +209,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (isOnPlatform && currentBlockId && !state.scoredBlocks.has(currentBlockId)) {
       set(state => ({
         score: state.score + 1,
-        scoredBlocks: new Set([...state.scoredBlocks, currentBlockId])
+        scoredBlocks: new Set([...state.scoredBlocks, currentBlockId as string])
       }));
     }
 

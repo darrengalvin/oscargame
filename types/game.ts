@@ -16,6 +16,7 @@ export interface GameState {
   isJumping: boolean;
   obstacles: Obstacle[];
   blocks: Block[];
+  scoredBlocks: Set<string>;
   jumpStartTime: number;
   isJumpHeld: boolean;
 }
@@ -43,9 +44,8 @@ export interface Block {
 export interface GameStore extends GameState {
   startGame: () => void;
   endGame: () => void;
-  jump: () => void;
-  updateGameState: (delta: number) => void;
-  updateScore: (newScore: number) => void;
   startJump: () => void;
   endJump: () => void;
+  updateGameState: (delta: number) => void;
+  updateScore: (newScore: number) => void;
 } 
