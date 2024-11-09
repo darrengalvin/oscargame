@@ -6,15 +6,6 @@ import { Sky, Cloud, Stars } from '@react-three/drei';
 import { useGameStore } from '@/store/gameStore';
 import * as THREE from 'three';
 
-// Define Cloud props type
-interface CloudProps {
-  opacity?: number;
-  speed?: number;
-  width?: number;
-  depth?: number;
-  segments?: number;
-}
-
 export default function Environment() {
   const cloudsRef = useRef<THREE.Group>(null);
   const mountainsRef = useRef<THREE.Group>(null);
@@ -22,7 +13,7 @@ export default function Environment() {
 
   // Create repeating patterns for ground
   const groundPattern = useMemo(() => {
-    if (typeof window === 'undefined') return null; // Handle SSR
+    if (typeof window === 'undefined') return null;
 
     const canvas = document.createElement('canvas');
     canvas.width = 128;
@@ -32,7 +23,6 @@ export default function Environment() {
       context.fillStyle = '#228B22';
       context.fillRect(0, 0, 128, 128);
       
-      // Add some texture
       context.fillStyle = '#1a6b1a';
       for (let i = 0; i < 50; i++) {
         const x = Math.random() * 128;
@@ -58,7 +48,6 @@ export default function Environment() {
 
   return (
     <>
-      {/* Sky background */}
       <Sky
         distance={450000}
         sunPosition={[Math.sin(worldPosition * 0.001) * 2, 1, 0]}
@@ -66,7 +55,6 @@ export default function Environment() {
         azimuth={0.25}
       />
 
-      {/* Stars */}
       <Stars
         radius={100}
         depth={50}
@@ -77,7 +65,6 @@ export default function Environment() {
         speed={1}
       />
 
-      {/* Clouds */}
       <group ref={cloudsRef}>
         {[...Array(20)].map((_, i) => (
           <Cloud
@@ -89,14 +76,12 @@ export default function Environment() {
             ]}
             opacity={0.5}
             speed={0.4}
-            width={1 + Math.random() * 3}
-            depth={Math.random() * 0.5}
             segments={20}
+            scale={1 + Math.random() * 3}
           />
         ))}
       </group>
 
-      {/* Ground */}
       {groundPattern && (
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -5, 0]}>
           <planeGeometry args={[1000, 1000]} />
@@ -108,7 +93,6 @@ export default function Environment() {
         </mesh>
       )}
 
-      {/* Mountains */}
       <group ref={mountainsRef}>
         {[...Array(15)].map((_, i) => {
           const height = 10 + Math.random() * 15;
@@ -123,7 +107,6 @@ export default function Environment() {
                   flatShading
                 />
               </mesh>
-              {/* Snow caps */}
               <mesh position={[0, height * 0.4, 0]}>
                 <coneGeometry args={[3, height * 0.2, 8]} />
                 <meshStandardMaterial 
@@ -137,7 +120,6 @@ export default function Environment() {
         })}
       </group>
 
-      {/* Fog */}
       <fog attach="fog" args={['#87CEEB', 30, 100]} />
     </>
   );
