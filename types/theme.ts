@@ -1,4 +1,4 @@
-export type ThemeName = 'prehistoric' | 'jungle' | 'volcano' | 'underwater' | 'space' | 'candy';
+export type ThemeName = 'prehistoric' | 'underwater' | 'candy' | 'space' | 'jungle';
 
 export interface ThemeConfig {
   name: ThemeName;
@@ -25,7 +25,7 @@ export interface ThemeConfig {
     type: string;
     model: string;
     color: string;
-    frequency: number; // 0-1, how often they appear
+    frequency: number;
   }[];
   particleEffects: {
     jump: string;
@@ -38,4 +38,5 @@ export interface ThemeConfig {
     collect: string;
     death: string;
   };
+  price: number;
 } 

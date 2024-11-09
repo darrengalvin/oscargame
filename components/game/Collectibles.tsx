@@ -5,11 +5,12 @@ import { useFrame } from '@react-three/fiber';
 import { useGameStore } from '@/store/gameStore';
 import { themes } from '@/config/themes';
 import { Sphere } from '@react-three/drei';
+import type { ThemeName } from '@/types/theme';
 
 export default function Collectibles() {
   const groupRef = useRef<THREE.Group>(null);
   const { collectibles, worldPosition, currentTheme } = useGameStore();
-  const theme = themes[currentTheme];
+  const theme = themes[currentTheme as keyof typeof themes];
 
   useFrame((state) => {
     if (groupRef.current) {

@@ -1,6 +1,6 @@
-import { ThemeConfig } from '@/types/theme';
+import { ThemeName, ThemeConfig } from '@/types/theme';
 
-export const themes: Record<string, ThemeConfig> = {
+export const themes: Record<ThemeName, ThemeConfig> = {
   prehistoric: {
     name: 'prehistoric',
     displayName: 'Prehistoric',
@@ -33,16 +33,17 @@ export const themes: Record<string, ThemeConfig> = {
       jump: '/audio/dino-roar.mp3',
       collect: '/audio/collect.mp3',
       death: '/audio/death.mp3'
-    }
+    },
+    price: 100
   },
   underwater: {
     name: 'underwater',
     displayName: 'Underwater',
-    backgroundColor: '#00CED1',
-    groundColor: '#00868B',
+    backgroundColor: '#006994',
+    groundColor: '#00496B',
     platformColors: {
-      normal: '#4682B4',
-      moving: '#1E90FF',
+      normal: '#00496B',
+      moving: '#003B56',
     },
     playerModel: 'fish',
     obstacles: [
@@ -50,30 +51,31 @@ export const themes: Record<string, ThemeConfig> = {
       { type: 'jellyfish', model: 'jellyfish', color: '#FF69B4' }
     ],
     collectibles: [
-      { type: 'pearl', model: 'pearl', color: '#FFF5EE', points: 10 },
-      { type: 'seashell', model: 'seashell', color: '#FFE4E1', points: 5 }
+      { type: 'pearl', model: 'pearl', color: '#FFF5E1', points: 10 },
+      { type: 'shell', model: 'shell', color: '#FFE4C4', points: 5 }
     ],
     environmentObjects: [
       { type: 'coral', model: 'coral', color: '#FF7F50', frequency: 0.4 },
-      { type: 'seaweed', model: 'seaweed', color: '#20B2AA', frequency: 0.6 }
+      { type: 'seaweed', model: 'seaweed', color: '#20B2AA', frequency: 0.5 }
     ],
     particleEffects: {
       jump: 'bubbles',
       collect: 'sparkle',
-      death: 'bubbleExplosion'
+      death: 'bubbles'
     },
     music: '/audio/underwater.mp3',
     soundEffects: {
       jump: '/audio/bubble.mp3',
       collect: '/audio/collect.mp3',
-      death: '/audio/death.mp3'
-    }
+      death: '/audio/splash.mp3'
+    },
+    price: 150
   },
   candy: {
     name: 'candy',
     displayName: 'Candy Land',
     backgroundColor: '#FFB6C1',
-    groundColor: '#FFE4E1',
+    groundColor: '#FF69B4',
     platformColors: {
       normal: '#FF69B4',
       moving: '#FF1493',
@@ -81,27 +83,28 @@ export const themes: Record<string, ThemeConfig> = {
     playerModel: 'candyPerson',
     obstacles: [
       { type: 'lollipop', model: 'lollipop', color: '#FF69B4' },
-      { type: 'gummyBear', model: 'gummyBear', color: '#FF1493' }
+      { type: 'gummybear', model: 'gummybear', color: '#FF1493' }
     ],
     collectibles: [
-      { type: 'candy', model: 'candy', color: '#FF69B4', points: 10 },
+      { type: 'candy', model: 'candy', color: '#FFB6C1', points: 10 },
       { type: 'chocolate', model: 'chocolate', color: '#8B4513', points: 5 }
     ],
     environmentObjects: [
-      { type: 'candyCane', model: 'candyCane', color: '#FF0000', frequency: 0.4 },
-      { type: 'cottonCandy', model: 'cottonCandy', color: '#FFB6C1', frequency: 0.3 }
+      { type: 'candycane', model: 'candycane', color: '#FF0000', frequency: 0.3 },
+      { type: 'cottoncandy', model: 'cottoncandy', color: '#FFB6C1', frequency: 0.4 }
     ],
     particleEffects: {
-      jump: 'sparkles',
-      collect: 'candyBurst',
-      death: 'sugarExplosion'
+      jump: 'sparkle',
+      collect: 'sparkle',
+      death: 'sparkle'
     },
     music: '/audio/candyland.mp3',
     soundEffects: {
       jump: '/audio/pop.mp3',
-      collect: '/audio/sweet.mp3',
-      death: '/audio/crunch.mp3'
-    }
+      collect: '/audio/collect.mp3',
+      death: '/audio/splat.mp3'
+    },
+    price: 0
   },
   space: {
     name: 'space',
@@ -109,8 +112,8 @@ export const themes: Record<string, ThemeConfig> = {
     backgroundColor: '#000000',
     groundColor: '#1A1A1A',
     platformColors: {
-      normal: '#4A4A4A',
-      moving: '#6A6A6A',
+      normal: '#1A1A1A',
+      moving: '#333333',
     },
     playerModel: 'astronaut',
     obstacles: [
@@ -119,32 +122,33 @@ export const themes: Record<string, ThemeConfig> = {
     ],
     collectibles: [
       { type: 'star', model: 'star', color: '#FFD700', points: 10 },
-      { type: 'crystal', model: 'crystal', color: '#00FFFF', points: 5 }
+      { type: 'meteor', model: 'meteor', color: '#FF4500', points: 5 }
     ],
     environmentObjects: [
       { type: 'planet', model: 'planet', color: '#4169E1', frequency: 0.2 },
-      { type: 'meteor', model: 'meteor', color: '#FF4500', frequency: 0.3 }
+      { type: 'comet', model: 'comet', color: '#87CEEB', frequency: 0.3 }
     ],
     particleEffects: {
       jump: 'stardust',
-      collect: 'cosmic',
-      death: 'blackhole'
+      collect: 'sparkle',
+      death: 'explosion'
     },
     music: '/audio/space.mp3',
     soundEffects: {
       jump: '/audio/boost.mp3',
       collect: '/audio/collect.mp3',
       death: '/audio/void.mp3'
-    }
+    },
+    price: 200
   },
   jungle: {
     name: 'jungle',
     displayName: 'Jungle',
     backgroundColor: '#228B22',
-    groundColor: '#556B2F',
+    groundColor: '#006400',
     platformColors: {
-      normal: '#8B4513',
-      moving: '#A0522D',
+      normal: '#006400',
+      moving: '#004B00',
     },
     playerModel: 'monkey',
     obstacles: [
@@ -169,6 +173,7 @@ export const themes: Record<string, ThemeConfig> = {
       jump: '/audio/monkey.mp3',
       collect: '/audio/collect.mp3',
       death: '/audio/fall.mp3'
-    }
+    },
+    price: 250
   }
 }; 

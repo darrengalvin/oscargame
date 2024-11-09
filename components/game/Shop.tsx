@@ -6,6 +6,7 @@ import { themes } from '@/config/themes';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import UnlockProgress from './UnlockProgress';
+import { ThemeName } from '@/types/theme';
 
 const THEME_PRICES = {
   candy: 0,
@@ -16,18 +17,17 @@ const THEME_PRICES = {
 } as const;
 
 const THEME_IMAGES = {
-  candy: 'https://images.unsplash.com/photo-1499195333224-3ce974eecb47?w=800&auto=format',
-  prehistoric: 'https://images.unsplash.com/photo-1584844115436-473887b1e327?w=800&auto=format',
-  underwater: 'https://images.unsplash.com/photo-1546026423-cc4642628d2b?w=800&auto=format',
-  space: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&auto=format',
-  jungle: 'https://images.unsplash.com/photo-1590094744345-5b7a2069e103?w=800&auto=format',
+  candy: 'https://images.unsplash.com/photo-1587583484084-6e47e9c107a9?w=800&auto=format',
+  prehistoric: 'https://images.unsplash.com/photo-1619842504562-56aa49c95c67?w=800&auto=format',
+  underwater: 'https://images.unsplash.com/photo-1682687982501-1e58ab814714?w=800&auto=format',
+  space: 'https://images.unsplash.com/photo-1462332420958-a05d1e002413?w=800&auto=format',
+  jungle: 'https://images.unsplash.com/photo-1536147116438-62679a5e01f2?w=800&auto=format',
 } as const;
 
 type ThemeKey = keyof typeof THEME_PRICES;
 
 export default function Shop() {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
   const { gems, unlockedThemes, unlockTheme, currentTheme, changeTheme } = useGameStore();
 
   return (
@@ -91,105 +91,24 @@ export default function Shop() {
 
               {/* Themes Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
-                {/* Always show Candy Land first */}
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  className="relative rounded-xl overflow-hidden ring-4 ring-yellow-400"
-                >
-                  <div className="absolute top-2 right-2 bg-yellow-400 text-black px-3 py-1 rounded-full text-sm font-bold z-10">
-                    Free Starter Theme!
-                  </div>
-                  {/* Theme Image */}
-                  <div className="relative h-48">
-                    <Image
-                      src={THEME_IMAGES.candy}
-                      alt="Candy Land"
-                      fill
-                      className="object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
-                  </div>
-                  {/* Theme Info */}
-                  <div className="p-4 bg-black/40">
-                    <div className="flex justify-between items-start mb-4">
-                      <h3 className="text-xl font-bold text-white">
-                        Candy Land
-                      </h3>
-                      {THEME_PRICES.candy > 0 && (
-                        <div className="flex items-center gap-2 bg-black/30 px-3 py-1 rounded-full">
-                          <span className="text-yellow-300">💎</span>
-                          <span className="text-white font-bold">
-                            {THEME_PRICES.candy}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Theme Features */}
-                    <div className="space-y-2 mb-4">
-                      <div className="flex items-center gap-2 text-white/80 text-sm">
-                        <span>🎮</span>
-                        <span>Candy character</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-white/80 text-sm">
-                        <span>✨</span>
-                        <span>Special collectibles</span>
-                      </div>
-                    </div>
-
-                    {/* Action Button */}
-                    {unlockedThemes.includes('candy') ? (
-                      <button
-                        onClick={() => {
-                          changeTheme('candy');
-                          setIsOpen(false);
-                        }}
-                        className={`w-full py-2 px-4 rounded-lg font-bold transition-all
-                          ${
-                            currentTheme === 'candy'
-                              ? 'bg-yellow-400 text-black'
-                              : 'bg-white/10 text-white hover:bg-white/20'
-                          }`}
-                      >
-                        {currentTheme === 'candy' ? 'Selected' : 'Select'}
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => unlockTheme('candy')}
-                        disabled={gems < THEME_PRICES.candy}
-                        className={`w-full py-2 px-4 rounded-lg font-bold
-                          ${
-                            gems >= THEME_PRICES.candy
-                              ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white hover:from-emerald-600 hover:to-teal-600'
-                              : 'bg-gray-500 text-white/50 cursor-not-allowed'
-                          }`}
-                      >
-                        {THEME_PRICES.candy === 0
-                          ? 'Free'
-                          : `Unlock for 💎${THEME_PRICES.candy}`}
-                      </button>
-                    )}
-                  </div>
-                </motion.div>
-
-                {/* Show other themes with locked overlay if not unlocked */}
-                {Object.entries(themes)
-                  .filter(([key]) => key !== 'candy')
-                  .map(([themeKey, theme]) => (
+                {Object.entries(themes).map(([themeKey, theme]) => {
+                  const typedThemeKey = themeKey as ThemeName;
+                  return (
                     <motion.div
                       key={themeKey}
                       whileHover={{ scale: 1.02 }}
                       className={`relative rounded-xl overflow-hidden ${
-                        currentTheme === themeKey
+                        currentTheme === typedThemeKey
                           ? 'ring-4 ring-yellow-400'
                           : 'ring-1 ring-white/20'
                       }`}
                     >
-                      {!unlockedThemes.includes(themeKey) && (
+                      {!unlockedThemes.includes(typedThemeKey) && (
                         <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] z-10">
                           {/* Theme name banner at top */}
                           <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-violet-600/80 to-indigo-600/80 py-2 px-4">
                             <h3 className="text-xl font-bold text-white text-center">
+                              {theme.displayName}
                               {theme.displayName}
                             </h3>
                           </div>
@@ -205,17 +124,17 @@ export default function Shop() {
                             <div className="flex items-center justify-center gap-3">
                               <span className="text-2xl">💎</span>
                               <span className="text-white font-bold text-lg">
-                                {THEME_PRICES[themeKey]} gems needed
+                                {THEME_PRICES[typedThemeKey as keyof typeof THEME_PRICES]} gems needed
                               </span>
                             </div>
-                            <UnlockProgress theme={themeKey} price={THEME_PRICES[themeKey]} />
+                            <UnlockProgress theme={typedThemeKey} price={THEME_PRICES[typedThemeKey as keyof typeof THEME_PRICES]} />
                           </div>
                         </div>
                       )}
                       {/* Theme Image */}
                       <div className="relative h-48">
                         <Image
-                          src={THEME_IMAGES[themeKey]}
+                          src={THEME_IMAGES[typedThemeKey as keyof typeof THEME_IMAGES]}
                           alt={theme.displayName}
                           fill
                           className="object-cover"
@@ -228,11 +147,11 @@ export default function Shop() {
                           <h3 className="text-xl font-bold text-white">
                             {theme.displayName}
                           </h3>
-                          {THEME_PRICES[themeKey] > 0 && (
+                          {THEME_PRICES[typedThemeKey as keyof typeof THEME_PRICES] > 0 && (
                             <div className="flex items-center gap-2 bg-black/30 px-3 py-1 rounded-full">
                               <span className="text-yellow-300">💎</span>
                               <span className="text-white font-bold">
-                                {THEME_PRICES[themeKey]}
+                                {THEME_PRICES[typedThemeKey as keyof typeof THEME_PRICES]}
                               </span>
                             </div>
                           )}
@@ -249,42 +168,42 @@ export default function Shop() {
                             <span>Special collectibles</span>
                           </div>
                         </div>
-
                         {/* Action Button */}
-                        {unlockedThemes.includes(themeKey) ? (
+                        {unlockedThemes.includes(typedThemeKey) ? (
                           <button
                             onClick={() => {
-                              changeTheme(themeKey);
+                              changeTheme(typedThemeKey);
                               setIsOpen(false);
                             }}
                             className={`w-full py-2 px-4 rounded-lg font-bold transition-all
                               ${
-                                currentTheme === themeKey
+                                currentTheme === typedThemeKey
                                   ? 'bg-yellow-400 text-black'
                                   : 'bg-white/10 text-white hover:bg-white/20'
                               }`}
                           >
-                            {currentTheme === themeKey ? 'Selected' : 'Select'}
+                            {currentTheme === typedThemeKey ? 'Selected' : 'Select'}
                           </button>
                         ) : (
                           <button
-                            onClick={() => unlockTheme(themeKey)}
-                            disabled={gems < THEME_PRICES[themeKey]}
+                            onClick={() => unlockTheme(typedThemeKey)}
+                            disabled={gems < THEME_PRICES[typedThemeKey]}
                             className={`w-full py-2 px-4 rounded-lg font-bold
                               ${
-                                gems >= THEME_PRICES[themeKey]
+                                gems >= THEME_PRICES[typedThemeKey]
                                   ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white hover:from-emerald-600 hover:to-teal-600'
                                   : 'bg-gray-500 text-white/50 cursor-not-allowed'
                               }`}
                           >
-                            {THEME_PRICES[themeKey] === 0
+                            {THEME_PRICES[typedThemeKey] === 0
                               ? 'Free'
-                              : `Unlock for 💎${THEME_PRICES[themeKey]}`}
+                              : `Unlock for 💎${THEME_PRICES[typedThemeKey]}`}
                           </button>
                         )}
                       </div>
                     </motion.div>
-                  ))}
+                  );
+                })}
               </div>
 
               {/* Close Button */}

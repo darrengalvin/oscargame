@@ -33,8 +33,8 @@ const FishModel = ({ color = '#4682B4' }) => (
       <meshStandardMaterial color={color} />
     </mesh>
     {/* Tail fin */}
-    <mesh position={[-0.5, 0, 0]}>
-      <coneGeometry args={[0.3, 0.6, 2]} rotation={[0, 0, Math.PI / 2]} />
+    <mesh position={[-0.5, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+      <coneGeometry args={[0.3, 0.6, 2]} />
       <meshStandardMaterial color={color} />
     </mesh>
   </group>
@@ -56,18 +56,24 @@ const AstronautModel = ({ color = '#FFFFFF' }) => (
   </group>
 );
 
+type ThemeName = keyof typeof themes;
+
+type ModelMap = {
+  [K in ThemeName]: ({ color }: { color?: string }) => JSX.Element;
+};
+
+const modelMap: ModelMap = {
+  prehistoric: DinosaurModel,
+  underwater: FishModel,
+  space: AstronautModel,
+  candy: DinosaurModel,
+  jungle: DinosaurModel,
+};
+
 export default function PlayerModel() {
   const currentTheme = useGameStore((state) => state.currentTheme);
   const theme = themes[currentTheme];
 
-  const modelMap = {
-    prehistoric: DinosaurModel,
-    underwater: FishModel,
-    space: AstronautModel,
-    // Add more models for other themes
-  };
-
-  const ThemedModel = modelMap[currentTheme] || DinosaurModel;
-
+  const ThemedModel = modelMap[currentTheme];
   return <ThemedModel />;
 } 

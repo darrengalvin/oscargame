@@ -86,38 +86,6 @@ interface GameState {
   };
 }
 
-interface GameStore extends GameState {
-  score: number;
-  highScore: number;
-  isPlaying: boolean;
-  playerPosition: { x: number; y: number; z: number };
-  worldPosition: number;
-  velocity: { x: number; y: number; z: number };
-  isJumping: boolean;
-  obstacles: {
-    id: string;
-    position: { x: number; y: number; z: number };
-    type: string;
-  }[];
-  blocks: Block[];
-  scoredBlocks: Set<string>;
-  jumpStartTime: number;
-  isJumpHeld: boolean;
-  changeTheme: (theme: ThemeName) => void;
-  collectGem: () => void;
-  collectSpecialItem: (theme: ThemeName, itemType: string) => void;
-  unlockTheme: (theme: ThemeName) => void;
-  initializeProgress: () => void;
-}
-
-const THEME_PRICES = {
-  candy: 0,
-  prehistoric: 100,
-  underwater: 150,
-  space: 200,
-  jungle: 250,
-};
-
 export const useGameStore = create<GameStore>((set, get) => ({
   score: 0,
   highScore: 0,
@@ -136,6 +104,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   gems: 0,
   unlockedThemes: ['candy'], // Candy theme is free
   specialItems: {},
+  themes: themes,
 
   startGame: () => set({ 
     isPlaying: true, 
@@ -290,7 +259,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     });
   },
   
-  updateScore: (newScore) => set({ score: newScore }),
+  updateScore: (newScore: number) => set({ score: newScore }),
 
   changeTheme: (theme: ThemeName) => {
     set({ currentTheme: theme });
@@ -336,7 +305,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
   unlockTheme: (theme: ThemeName) => {
     const state = get();
-    const price = THEME_PRICES[theme];
+    const price = state.themes[theme].price;
     if (state.gems >= price && !state.unlockedThemes.includes(theme)) {
       set(state => ({
         gems: state.gems - price,

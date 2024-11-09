@@ -97,7 +97,7 @@ export default function Tutorial() {
                     onClick={completeTutorial}
                     className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg font-bold hover:from-green-600 hover:to-emerald-600"
                   >
-                    Let's Play!
+                    Let&apos;s Play!
                   </button>
                 )}
               </div>

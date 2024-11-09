@@ -15,7 +15,8 @@ import SpecialCollectible from './game/SpecialCollectible';
 import Gem from './game/Gem';
 
 export default function Game() {
-  const { isPlaying, startGame, initializeProgress } = useGameStore();
+  const { isPlaying, initializeProgress } = useGameStore();
+  const startGame = useGameStore((state) => state.startGame);
 
   // Initialize saved progress when component mounts
   useEffect(() => {
@@ -67,12 +68,12 @@ export default function Game() {
       {/* UI Elements */}
       <UI />
       <TouchControls />
-      <Shop /> {/* Shop will be visible at all times */}
+      <Shop />
       
       {!isPlaying && (
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
           <button
-            onClick={startGame}
+            onClick={() => startGame()}
             className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
           >
             Start Game

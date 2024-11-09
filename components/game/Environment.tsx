@@ -18,9 +18,18 @@ import {
 } from '@react-three/postprocessing';
 import { useGameStore } from '@/store/gameStore';
 import { themes } from '@/config/themes';
+import { ThemeName } from '@/types/theme';
 import * as THREE from 'three';
 import { extend } from '@react-three/fiber';
 import { BlendFunction } from 'postprocessing';
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      groundShaderMaterial: any; // Or define a more specific type if needed
+    }
+  }
+}
 
 // Custom shader for the ground effect
 const GroundShaderMaterial = shaderMaterial(
@@ -60,8 +69,14 @@ const GroundShaderMaterial = shaderMaterial(
 
 extend({ GroundShaderMaterial });
 
-const ThemeBackgrounds = {
-  prehistoric: ({ position }: { position: number }) => (
+type ThemeBackgroundProps = {
+  position: number;
+};
+
+type ThemeBackgroundComponent = ({ position }: ThemeBackgroundProps) => JSX.Element;
+
+const ThemeBackgrounds: Record<ThemeName, ThemeBackgroundComponent> = {
+  prehistoric: ({ position }: ThemeBackgroundProps) => (
     <group position={[-position * 0.3, 0, -20]}>
       {/* Enhanced prehistoric environment */}
       <Sparkles 
@@ -97,7 +112,7 @@ const ThemeBackgrounds = {
     </group>
   ),
 
-  underwater: ({ position }: { position: number }) => (
+  underwater: ({ position }: ThemeBackgroundProps) => (
     <group position={[-position * 0.3, 0, -20]}>
       {/* Coral reefs */}
       {[...Array(15)].map((_, i) => (
@@ -129,7 +144,7 @@ const ThemeBackgrounds = {
     </group>
   ),
 
-  candy: ({ position }: { position: number }) => (
+  candy: ({ position }: ThemeBackgroundProps) => (
     <group position={[-position * 0.3, 0, -20]}>
       {/* Lollipop trees */}
       {[...Array(10)].map((_, i) => (
@@ -154,7 +169,7 @@ const ThemeBackgrounds = {
     </group>
   ),
 
-  space: ({ position }: { position: number }) => (
+  space: ({ position }: ThemeBackgroundProps) => (
     <group position={[-position * 0.3, 0, -20]}>
       {/* Planets */}
       {[...Array(5)].map((_, i) => (
@@ -184,7 +199,7 @@ const ThemeBackgrounds = {
     </group>
   ),
 
-  jungle: ({ position }: { position: number }) => (
+  jungle: ({ position }: ThemeBackgroundProps) => (
     <group position={[-position * 0.3, 0, -20]}>
       {/* Dense trees */}
       {[...Array(20)].map((_, i) => (
@@ -226,7 +241,7 @@ export default function Environment() {
     }
   });
 
-  const ThemeBackground = ThemeBackgrounds[currentTheme] || ThemeBackgrounds.prehistoric;
+  const ThemeBackground = ThemeBackgrounds[currentTheme];
 
   return (
     <>

@@ -7,7 +7,7 @@ import { themes } from '@/config/themes';
 import * as THREE from 'three';
 
 export default function ParticleEffects() {
-  const particlesRef = useRef<THREE.Points>();
+  const particlesRef = useRef<THREE.Points | null>(null);
   const { currentTheme, isJumping, playerPosition } = useGameStore();
   const theme = themes[currentTheme];
 
@@ -37,7 +37,7 @@ export default function ParticleEffects() {
       particlesRef.current.geometry = geometry;
       particlesRef.current.material = material;
     }
-  }, [currentTheme]);
+  }, [currentTheme, theme.particleEffects.jump]);
 
   useFrame((state) => {
     if (particlesRef.current && isJumping) {
@@ -53,5 +53,22 @@ export default function ParticleEffects() {
     }
   });
 
-  return <points ref={particlesRef} />;
+  return (
+    <points ref={particlesRef}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          count={100}
+          array={new Float32Array(300)}
+          itemSize={3}
+        />
+      </bufferGeometry>
+      <pointsMaterial
+        size={0.1}
+        color={theme.particleEffects.jump === 'dust' ? '#8B4513' :
+               theme.particleEffects.jump === 'bubbles' ? '#87CEEB' :
+               '#FFFFFF'}
+      />
+    </points>
+  );
 } 

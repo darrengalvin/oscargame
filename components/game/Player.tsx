@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useCallback } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useGameStore } from '@/store/gameStore';
 import PlayerModel from './models/PlayerModel';
@@ -17,34 +17,33 @@ export default function Player() {
     isJumping,
     isJumpHeld 
   } = useGameStore();
-  
+
+  const handleKeyDown = useCallback((event: KeyboardEvent) => {
+    if ((event.code === 'Space' || event.code === 'ArrowUp') && !event.repeat) {
+      event.preventDefault();
+      startJump();
+    }
+  }, [startJump]);
+
+  const handleKeyUp = useCallback((event: KeyboardEvent) => {
+    if (event.code === 'Space' || event.code === 'ArrowUp') {
+      event.preventDefault();
+      endJump();
+    }
+  }, [endJump]);
+
   useEffect(() => {
-    // Keyboard controls
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if ((event.code === 'Space' || event.code === 'ArrowUp') && !event.repeat) {
-        event.preventDefault();
-        startJump();
-      }
-    };
-
-    const handleKeyUp = (event: KeyboardEvent) => {
-      if (event.code === 'Space' || event.code === 'ArrowUp') {
-        event.preventDefault();
-        endJump();
-      }
-    };
-
     // Only add keyboard listeners on desktop
     if (window.matchMedia('(min-width: 768px)').matches) {
       window.addEventListener('keydown', handleKeyDown);
       window.addEventListener('keyup', handleKeyUp);
-    }
 
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
-    };
-  }, [startJump, endJump]);
+      return () => {
+        window.removeEventListener('keydown', handleKeyDown);
+        window.removeEventListener('keyup', handleKeyUp);
+      };
+    }
+  }, [handleKeyDown, handleKeyUp]);
 
   useFrame((state, delta) => {
     if (!ref.current || !isPlaying) return;
@@ -80,4 +79,5 @@ export default function Player() {
       <PlayerModel />
     </group>
   );
-} 
+}
+

@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
+import type { CreateTypes } from 'canvas-confetti';
 import { useEffect } from 'react';
 
 interface Props {
@@ -36,13 +37,13 @@ export default function UnlockCelebration({ theme, onClose }: Props) {
             🎉 New Theme Unlocked! 🎉
           </h2>
           <p className="text-xl text-white/90 mb-6">
-            You've unlocked the {theme} theme!
+            You&apos;ve unlocked the {theme} theme!
           </p>
           <button
             onClick={onClose}
             className="px-6 py-2 bg-white text-purple-600 rounded-lg font-bold hover:bg-white/90 transition-colors"
           >
-            Let's Play!
+            Let&apos;s Play!
           </button>
         </div>
       </motion.div>
