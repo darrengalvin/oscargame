@@ -18,7 +18,9 @@ const MIN_JUMP_TIME = 100; // milliseconds
 const MAX_JUMP_TIME = 400; // milliseconds
 const JUMP_FORCE_INCREMENT = 0.001;
 
-const generateNewBlock = (index: number, lastBlockY: number) => ({
+type BlockType = 'normal' | 'moving' | 'disappearing';
+
+const generateNewBlock = (index: number, lastBlockY: number): Block => ({
   id: `block-${index}`,
   position: { 
     x: index * BLOCK_SPACING,
@@ -26,8 +28,9 @@ const generateNewBlock = (index: number, lastBlockY: number) => ({
        Math.max(-0.5, Math.min(0.8, lastBlockY + (Math.random() * 0.5 - 0.25))),
     z: 0 
   },
-  type: index === 0 ? 'normal' : // First block is always normal
-        Math.random() > 0.85 ? 'moving' : 'normal' as const,
+  type: (index === 0 ? 'normal' : 
+         Math.random() > 0.85 ? 'moving' : 
+         'normal') as BlockType
 });
 
 const generateObstacle = (blockX: number, blockY: number) => ({
